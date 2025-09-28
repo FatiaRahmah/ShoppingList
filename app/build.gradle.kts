@@ -40,6 +40,17 @@ android {
 }
 
 dependencies {
+    // Navigation & Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+// Material 3 terbaru
+    implementation("androidx.compose.material3:material3:1.3.0")
+
+// Material icons (untuk Icons.Default.*)
+    implementation("androidx.compose.material:material-icons-extended:1.7.4")
+
+// Accompanist (opsional — hanya jika mau animasi transisi)
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -48,7 +59,9 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+
+    implementation(libs.androidx.runtime)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

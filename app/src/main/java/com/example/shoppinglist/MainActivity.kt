@@ -3,88 +3,138 @@ package com.example.shoppinglist
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.shoppinglist.ui.theme.ShoppingListTheme
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.*
 import androidx.compose.runtime.getValue
-import com.example.shoppinglist.component.ItemInput
-import com.example.shoppinglist.component.SearchInput
-import com.example.shoppinglist.component.ShoppingList
-import com.example.shoppinglist.component.Title
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.shoppinglist.component.ShoppingListScreen
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import kotlinx.coroutines.launch
+import androidx.compose.ui.unit.dp
 
+
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ShoppingListTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+            MaterialTheme {
+                val navController = rememberNavController()
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
+                val scope = rememberCoroutineScope()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
+                // 🔹 Drawer hanya punya menu "Setting" sekarang
+                ModalNavigationDrawer(
+                    drawerState = drawerState,
+                    drawerContent = {
+                        ModalDrawerSheet {
+                            Text(
+                                text = "Menu",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                            NavigationDrawerItem(
+                                label = { Text("Setting") },
+                                selected = currentRoute == "setting",
+                                onClick = {
+                                    scope.launch { drawerState.close() }
+                                    navController.navigate("setting") {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
+                        }
+                    }
                 ) {
-                    ShoppingListApp()
+                    Scaffold(
+                        topBar = {
+                            CenterAlignedTopAppBar(
+                                title = { Text("ShoppingList App") },
+                                navigationIcon = {
+                                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                        Icon(Icons.Default.Menu, contentDescription = "Menu")
+                                    }
+                                }
+                            )
+                        },
+                        bottomBar = {
+                            NavigationBar {
+                                NavigationBarItem(
+                                    selected = currentRoute == "home",
+                                    onClick = {
+                                        navController.navigate("home") {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    },
+                                    icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+                                    label = { Text("Home") }
+                                )
+                                NavigationBarItem(
+                                    selected = currentRoute == "profile",
+                                    onClick = {
+                                        navController.navigate("profile") {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    },
+                                    icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
+                                    label = { Text("Profile") }
+                                )
+                            }
+                        }
+                    ) { innerPadding ->
+                        Box(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .fillMaxSize()
+                        ) {
+                            AnimatedNavHost(
+                                navController = navController,
+                                startDestination = "home",
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                composable(
+                                    route = "home",
+                                    enterTransition = { slideInHorizontally { 1000 } + fadeIn() },
+                                    exitTransition = { slideOutHorizontally { -1000 } + fadeOut() }
+                                ) {
+                                    ShoppingListScreen(navController)
+                                }
+
+                                composable(
+                                    route = "profile",
+                                    enterTransition = { slideInHorizontally { 1000 } + fadeIn() },
+                                    exitTransition = { slideOutHorizontally { -1000 } + fadeOut() }
+                                ) {
+                                    ProfileScreen()
+                                }
+
+                                composable(route = "setting") {
+                                    SettingScreen()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun ShoppingListApp() {
-    var newItemText by rememberSaveable { mutableStateOf("") }
-    var searchQuery by rememberSaveable { mutableStateOf("") }
-    val shoppingItems = remember { mutableStateListOf<String>() }
-
-    val filteredItems by remember(searchQuery, shoppingItems) {
-        derivedStateOf {
-            if (searchQuery.isBlank()) {
-                shoppingItems
-            } else {
-                shoppingItems.filter { it.contains(searchQuery,
-                    ignoreCase = true) }
-            }
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(WindowInsets.safeDrawing.asPaddingValues())
-            .padding(horizontal = 16.dp)
-    ) {
-        Title()
-        ItemInput(
-            text = newItemText,
-            onTextChange = { newItemText = it },
-            onAddItem = {
-                if (newItemText.isNotBlank()) {
-                    shoppingItems.add(newItemText)
-                    newItemText = ""
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        SearchInput(
-            query = searchQuery,
-            onQueryChange = { searchQuery = it }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        ShoppingList(items = filteredItems)
     }
 }

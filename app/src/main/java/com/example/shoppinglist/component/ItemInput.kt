@@ -16,10 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-
 @Composable
-fun ItemInput(text: String, onTextChange: (String) -> Unit, onAddItem:
-    () -> Unit) {
+fun ItemInput(text: String, onTextChange: (String) -> Unit, onAddItem: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -33,8 +31,7 @@ fun ItemInput(text: String, onTextChange: (String) -> Unit, onAddItem:
         )
         Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = onAddItem) {
-            Icon(imageVector = Icons.Default.Add, contentDescription =
-                "Add Item")
+            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Item")
             Spacer(modifier = Modifier.width(4.dp))
             Text("Add")
         }
