@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SettingScreen() {
     Scaffold(
-        topBar = { CenterAlignedTopAppBar(title = { Text("Pengaturan") }) }
     ) { padding ->
         Box(modifier = Modifier
             .fillMaxSize()

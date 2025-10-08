@@ -4,12 +4,12 @@ import androidx.compose.ui.graphics.Color
 
 
 
-val RedLight = Color(0xFFF8C436)
+val RedLight = Color(0xFF706555)
 val RedDark = Color(0xFFF8F8A7)
 val RedOn = Color(0xFF461902)
 val RedBackground = Color(0xFFF2F3EB)
 val RedOnBackground = Color(0xFF1C1B1F)
-val RedSurface = Color(0xFFFFC127)
+val RedSurface = Color(0xFFE7C25F)
 val RedOnSurface = Color(0xFF1C1B1F)
 
 val RedSurfaceDark = Color(0xFFFDED60)

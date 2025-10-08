@@ -25,6 +25,8 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.launch
 import androidx.compose.ui.unit.dp
+import com.example.shoppinglist.ui.theme.ShoppingListTheme
+
 
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
@@ -32,14 +34,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            ShoppingListTheme {
                 val navController = rememberNavController()
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                // 🔹 Drawer hanya punya menu "Setting" sekarang
                 ModalNavigationDrawer(
                     drawerState = drawerState,
                     drawerContent = {
@@ -66,7 +67,16 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         topBar = {
                             CenterAlignedTopAppBar(
-                                title = { Text("ShoppingList App") },
+                                title = {
+                                    Text(
+                                        when (currentRoute) {
+                                            "home" -> "Daftar Belanja"
+                                            "profile" -> "Profil"
+                                            "setting" -> "Pengaturan"
+                                            else -> ""
+                                        }
+                                    )
+                                },
                                 navigationIcon = {
                                     IconButton(onClick = { scope.launch { drawerState.open() } }) {
                                         Icon(Icons.Default.Menu, contentDescription = "Menu")
@@ -74,6 +84,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         },
+
                         bottomBar = {
                             NavigationBar {
                                 NavigationBarItem(
@@ -84,7 +95,12 @@ class MainActivity : ComponentActivity() {
                                             restoreState = true
                                         }
                                     },
-                                    icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+                                    icon = {
+                                        Icon(
+                                            Icons.Default.Home,
+                                            contentDescription = "Home"
+                                        )
+                                    },
                                     label = { Text("Home") }
                                 )
                                 NavigationBarItem(
@@ -95,7 +111,12 @@ class MainActivity : ComponentActivity() {
                                             restoreState = true
                                         }
                                     },
-                                    icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
+                                    icon = {
+                                        Icon(
+                                            Icons.Default.Person,
+                                            contentDescription = "Profile"
+                                        )
+                                    },
                                     label = { Text("Profile") }
                                 )
                             }
@@ -111,25 +132,9 @@ class MainActivity : ComponentActivity() {
                                 startDestination = "home",
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                composable(
-                                    route = "home",
-                                    enterTransition = { slideInHorizontally { 1000 } + fadeIn() },
-                                    exitTransition = { slideOutHorizontally { -1000 } + fadeOut() }
-                                ) {
-                                    ShoppingListScreen(navController)
-                                }
-
-                                composable(
-                                    route = "profile",
-                                    enterTransition = { slideInHorizontally { 1000 } + fadeIn() },
-                                    exitTransition = { slideOutHorizontally { -1000 } + fadeOut() }
-                                ) {
-                                    ProfileScreen()
-                                }
-
-                                composable(route = "setting") {
-                                    SettingScreen()
-                                }
+                                composable("home") { ShoppingListScreen(navController) }
+                                composable("profile") { ProfileScreen() }
+                                composable("setting") { SettingScreen() }
                             }
                         }
                     }

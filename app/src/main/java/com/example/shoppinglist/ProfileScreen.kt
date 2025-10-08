@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -25,24 +26,18 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ProfileScreen() {
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Profil Saya", style = MaterialTheme.typography.titleLarge) }
-            )
-        }
     ) { padding ->
         Column(
             modifier = Modifier
-                .padding(padding)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
-                .verticalScroll(rememberScrollState()) // ⬅️ Agar bisa discroll
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Foto Profil Bundar
+
             Image(
                 painter = painterResource(id = R.drawable.foto_tia1),
                 contentDescription = "Foto Diri",
@@ -55,14 +50,14 @@ fun ProfileScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nama besar
+
             Text(
                 text = "Fatia Rahmah",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp
                 ),
-                color = MaterialTheme.colorScheme.primary
+                color = Color(0xFF131110)
             )
             Text(
                 text = "Mahasiswa Universitas Andalas",
@@ -72,7 +67,7 @@ fun ProfileScreen() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Card Informasi Diri
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,6 +75,7 @@ fun ProfileScreen() {
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
+
                 )
             ) {
                 Column(
@@ -97,7 +93,7 @@ fun ProfileScreen() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Quote pribadi
+
             Text(
                 text = "“How lovely yellow is ^^”",
                 style = MaterialTheme.typography.bodyMedium.copy(

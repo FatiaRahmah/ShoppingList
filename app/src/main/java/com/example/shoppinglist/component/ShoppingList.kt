@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 
-// ✅ Halaman utama Shopping List (terhubung dengan Input & Search)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShoppingListScreen(navController: NavController) {
@@ -42,9 +42,6 @@ fun ShoppingListScreen(navController: NavController) {
     }
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(title = { Text("Shopping List") })
-        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -54,7 +51,7 @@ fun ShoppingListScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            // ➕ Input untuk menambah item baru
+            // Input untuk menambah item baru
             ItemInput(
                 text = newItem,
                 onTextChange = { newItem = it },
@@ -65,19 +62,19 @@ fun ShoppingListScreen(navController: NavController) {
                     }
                 }
             )
-            // 🔍 Kolom pencarian
+            // Kolom pencarian
             SearchInput(
                 query = searchQuery,
                 onQueryChange = { searchQuery = it }
             )
 
-            // 🛒 Tampilkan daftar belanja (hasil pencarian)
+            //  tampil daftar belanja (hasil pencarian)
             ShoppingList(items = filteredItems)
         }
     }
 }
 
-// ✅ Daftar item belanja (dengan animasi)
+
 @Composable
 fun ShoppingList(items: List<String>) {
     LazyColumn(
